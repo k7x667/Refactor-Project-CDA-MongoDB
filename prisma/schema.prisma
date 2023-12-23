@@ -1,0 +1,53 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Player {
+  id      String    @id @default(cuid())
+  name    String
+  Session Session[]
+}
+
+model Session {
+  id         String   @id @default(cuid())
+  sessionKey String
+  date       DateTime @default(now())
+  scene      Scene?   @relation(fields: [sceneId], references: [id])
+  playerId   String
+  player     Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  sceneId    String?
+}
+
+model Scene {
+  id       String    @id
+  type     String
+  dialogs  Dialog[]
+  actions  Action[]  @relation("@belongsTo")
+  linkedBy Action[]  @relation("@link-to")
+  Session  Session[]
+}
+
+model Dialog {
+  id      String  @id @default(cuid())
+  speaker String
+  content String
+  scene   Scene[]
+  sceneId String?
+}
+
+model Action {
+  id       String  @id @default(cuid())
+  type     String
+  content  String
+  actionId String
+  link     Scene   @relation("@link-to", fields: [actionId], references: [id])
+  scene    Scene[] @relation("@belongsTo")
+}

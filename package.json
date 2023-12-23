@@ -1,0 +1,27 @@
+{
+  "name": "advetures",
+  "module": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "start": "bun src/index.ts"
+  },
+  "prisma": {
+    "seed": "bun prisma/seed.ts"
+  },
+  "devDependencies": {
+    "bun-types": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@inquirer/prompts": "^3.3.0",
+    "@prisma/client": "^5.7.1",
+    "@types/cli-spinner": "^0.2.3",
+    "@types/node": "^20.10.5",
+    "chalk": "^5.3.0",
+    "cli-spinner": "^0.2.10",
+    "nanoid": "^5.0.4",
+    "prisma": "^5.7.1"
+  }
+}
