@@ -1,3 +1,6 @@
+# **[EXO](exo/mongo_db_query.md)**
+
+
 # Project Adventures
 
 Wa are using bun for this project a NodeJs runner, please download and install it : https://bun.sh/
