@@ -1,4 +1,4 @@
-# **[EXO](exo/mongo_db_query.md)**
+## **[exo here](exo/mongo_db_query.md)**
 
 
 # Project Adventures
