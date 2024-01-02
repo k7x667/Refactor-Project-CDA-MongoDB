@@ -35,11 +35,11 @@
    })
    ```
 
-4. **Annonces aux États-Unis avec aménité "bain à remous":**
+4. **Annonces aux États-Unis avec jacuzzi:**
    ```js
    db.listingsAndReviews.find({
-       "address.country": "États-Unis",
-       "amenities": "bain à remous"
+       "address.country": "United States",
+       "amenities": "bathtub"
    }, {
        "name": 1,
        "address": 1,
@@ -48,7 +48,7 @@
    })
    ```
 
-5. **Annonces avec aménité "piscine" et prix entre $200 et $400:**
+5. **Annonces avec une piscine et prix entre $200 et $400:**
    ```js
    db.listingsAndReviews.find({
        "amenities": "piscine",
@@ -63,10 +63,10 @@
    })
    ```
 
-6. **Annonces avec aménité "lave-linge" au Canada ou au Mexique:**
+6. **Annonces avec un lave-linge au Canada ou au Mexique:**
    ```js
    db.listingsAndReviews.find({
-       "amenities": "lave-linge",
+       "amenities": "washing-machine",
        "address.country": { 
            $in: [
                "Canada", 
@@ -80,10 +80,10 @@
    })
    ```
 
-7. **Annonces avec aménité "cheminée" et satisfaction >= 8:**
+7. **Annonces avec une cheminée et satisfaction >= 8:**
    ```js
    db.listingsAndReviews.find({
-       "amenities": "cheminée",
+       "amenities": "chimney",
        "review_scores.review_scores_rating": { 
            $gte: 8 
        }
@@ -95,14 +95,14 @@
    })
    ```
 
-8. **Annonces avec aménité "lave-linge" en Italie ou en Espagne:**
+8. **Annonces avec un lave-linge en italia ou en Espagne:**
    ```js
    db.listingsAndReviews.find({
-       "amenities": "lave-linge",
+       "amenities": "washing-machine",
        "address.country": { 
            $in: [
-               "Italie", 
-               "Espagne"
+               "italia", 
+               "spain"
            ] 
        }
    }, {
