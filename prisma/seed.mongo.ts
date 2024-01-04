@@ -1,38 +1,65 @@
-import { PrismaClient } from '@prisma/client';
+import mongoose from 'mongoose';
 import chalk from 'chalk';
-const prisma = new PrismaClient();
+
+/** mongoose.connect('mongodb://127.0.0.1:27017/alpha', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}); */
+
+mongoose.connect('mongodb://127.0.0.1:27017/omega')
+const { Schema } = mongoose;
 
 export const enum actionsTypes {
-	msg = 'msg',
-	room = 'room',
-	action = 'action',
-	sq = 'quit',
+  msg = 'msg',
+  room = 'room',
+  action = 'action',
+  sq = 'quit',
 }
 
 export enum dialogType {
-	self = 'self',
-	pnj = 'pnj',
-	narrator = 'narrator',
+  self = 'self',
+  pnj = 'pnj',
+  narrator = 'narrator',
 }
 
 export type Round = {
-	type: (typeof actionsTypes)[keyof typeof actionsTypes];
-	content: Dialog[];
-	actions: {
-		type: (typeof actionsTypes)[keyof typeof actionsTypes];
-		content: string;
-		link: string;
-	}[];
+  type: (typeof actionsTypes)[keyof typeof actionsTypes];
+  content: Dialog[];
+  actions: {
+    type: (typeof actionsTypes)[keyof typeof actionsTypes];
+    content: string;
+    link: string;
+  }[];
 };
 
 export type Dialog = {
-	speaker: (typeof dialogType)[keyof typeof dialogType];
-	content: string;
+  speaker: (typeof dialogType)[keyof typeof dialogType];
+  content: string;
 };
 
 export type RoundHolder = {
-	[key: string]: Round;
+  [key: string]: Round;
 };
+
+const sceneSchema = new Schema({
+  id: String,
+  type: String,
+  dialogs: [
+    {
+      speaker: String,
+      content: String,
+    },
+  ],
+  actions: [
+    {
+      type: String,
+      content: String,
+      link: String,
+    },
+  ],
+});
+
+const Scene = mongoose.model('Scene', sceneSchema);
 
 const dataStructure: RoundHolder = {
 	quit: {
@@ -375,45 +402,30 @@ const dataStructure: RoundHolder = {
 		],
 	},
 };
+
 async function main() {
-	console.log(chalk.green('Seeding data...'));
-	for (const [key, value] of Object.entries(dataStructure)) {
-		await prisma.scene.create({
-			data: {
-				id: key,
-				type: value.type,
-				dialogs: {
-					create: [
-						...value.content.map((item) => ({
-							speaker: item.speaker,
-							content: item.content,
-						})),
-					],
-				},
-				actions: {
-					create: [
-						...value.actions.map((item) => ({
-							type: item.type,
-							content: item.content,
-							link: {
-								connect: {
-									id: item.link,
-								},
-							},
-						})),
-					],
-				},
-			},
-		});
-	}
-	console.log(chalk.green('✅ Data seeding finished with success!'));
+  console.log(chalk.green('Seeding data...'));
+  for (const [key, value] of Object.entries(dataStructure)) {
+    await Scene.create({
+      id: key,
+      type: value.type,
+      dialogs: [...value.content],
+      actions: [
+        ...value.actions.map((item) => ({
+          type: item.type,
+          content: item.content,
+          link: item.link,
+        })),
+      ],
+    });
+  }
+  console.log(chalk.green('✅ Data seeding finished with success!'));
 }
-await main()
-	.then(async () => {
-		await prisma.$disconnect();
-	})
-	.catch(async (e) => {
-		console.error(e);
-		await prisma.$disconnect();
-		process.exit(1);
-	});
+
+main()
+  .then(() => mongoose.disconnect())
+  .catch(async (e) => {
+    console.error(e);
+    await mongoose.disconnect();
+    process.exit(1);
+  });
